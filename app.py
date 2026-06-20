@@ -27,6 +27,8 @@ from typing import Dict, List, Tuple, Any, Optional
 
 import pandas as pd
 import requests
+
+# HOTFIX_LOADING_FAST: 첫 화면 10분 로딩 방지 · 초기 API 자동호출 OFF · 버튼 클릭 시만 실시간 수집
 import urllib3
 import streamlit as st
 
@@ -585,7 +587,7 @@ def load_live_cache() -> Dict[str, pd.DataFrame]:
 
 
 
-def safe_get_url(req_url: str, timeout: int = 12):
+def safe_get_url(req_url: str, timeout: int = 6):
     """KRA/공공데이터 SSL 인증서 오류가 나도 앱이 멈추지 않도록 1회 자동 재시도."""
     try:
         return requests.get(req_url, timeout=timeout)
@@ -602,7 +604,7 @@ def fetch_one_api(key: str, rc_date: str, meet: str, race_no: int) -> Tuple[pd.D
     for req_url in request_variants(url, rc_date, meet, race_no):
         last_url = req_url
         try:
-            r = safe_get_url(req_url, timeout=12)
+            r = safe_get_url(req_url, timeout=6)
             if r.status_code != 200:
                 last_msg = f"HTTP {r.status_code}"
                 continue
@@ -1686,7 +1688,7 @@ def smart_default_refresh_seconds(mode: str) -> int:
         return 60
     if mode == "전체 26개":
         return 300
-    return 120
+    return 0
 
 
 def fetch_all_live(rc_date: str, meet: str, race_no: int, selected: List[str]) -> Tuple[Dict[str, pd.DataFrame], pd.DataFrame]:
@@ -2584,10 +2586,17 @@ def render_live_panel(rc_date: str, meet: str, race_no: int, selected: List[str]
     with col_b:
         run_sim = st.button("불러오기 + 시뮬레이션")
 
-    if run or run_sim or not st.session_state["live_data"]:
-        data, status = fetch_all_live(rc_date, meet, int(race_no), selected)
+    if run or run_sim:
+        with st.spinner("실시간 API 수집 중... 최대 30~60초 걸릴 수 있습니다."):
+            data, status = fetch_all_live(rc_date, meet, int(race_no), selected)
         st.session_state["live_data"] = data
         st.session_state["api_status"] = status
+    elif not st.session_state.get("live_data"):
+        # 첫 화면에서는 API를 자동 호출하지 않습니다.
+        # Streamlit Cloud에서 외부 API 응답 지연이 있으면 흰 화면/스피너가 오래 지속되기 때문입니다.
+        cache = load_live_cache()
+        st.session_state["live_data"] = cache if cache else {}
+        st.session_state["api_status"] = pd.DataFrame([{"API":"초기화","상태":"첫 화면 빠른 로딩: API 자동호출 OFF · 버튼 클릭 시 수집","행수":sum(len(v) for v in cache.values()) if cache else 0}])
 
     data = st.session_state.get("live_data", {})
     status = st.session_state.get("api_status", pd.DataFrame())
@@ -2826,7 +2835,7 @@ def render() -> None:
         st.session_state["race_time_text"] = race_time_text
         sim_count = st.slider("시뮬레이션", 300, 5000, 1200, step=100)
         risk_mode = st.selectbox("전략", ["균형형", "안전형", "공격형"], index=0)
-        collection_mode = st.selectbox("API 수집 모드", ["스마트 자동", "아침 사전수집", "경주 전 1회수집", "실시간 집중", "허브만 분석", "수동 ON/OFF", "전체 26개"], index=0, help="26개 API를 매번 전부 부르지 않고, 시간대/상황별로 필요한 것만 호출합니다.")
+        collection_mode = st.selectbox("API 수집 모드", ["스마트 자동", "아침 사전수집", "경주 전 1회수집", "실시간 집중", "허브만 분석", "수동 ON/OFF", "전체 26개"], index=4, help="첫 화면 로딩 방지를 위해 기본값은 허브만 분석입니다. 실시간 수집은 버튼을 눌러 실행하세요.")
         st.session_state["collection_mode"] = collection_mode
         default_refresh = smart_default_refresh_seconds(collection_mode)
         refresh_options = [0, 60, 120, 300, 600, 3600]
@@ -2873,12 +2882,7 @@ def render() -> None:
         render_help_panel()
 
     if int(auto_refresh or 0) > 0:
-        st.caption(f"자동 새로고침 설정: {int(auto_refresh)}초")
-        try:
-            time.sleep(0.1)
-            st.autorefresh(interval=int(auto_refresh) * 1000, key="maru_auto_refresh")  # available in some Streamlit builds
-        except Exception:
-            pass
+        st.caption(f"자동 새로고침 설정: {int(auto_refresh)}초 · 현재 핫픽스에서는 자동 새로고침 대신 수동 새로고침을 권장합니다.")
 
 
 if __name__ == "__main__":
