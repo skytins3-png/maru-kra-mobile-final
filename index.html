@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>가을 공원 가상 쇼핑몰</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+            background-size: cover;
+            background-position: center;
+            /* Flask의 url_for를 사용하여 static 폴더의 이미지를 가져옵니다. */
+            background-image: url('{{ url_for('static', filename='park_background.jpg') }}'); 
+        }
+
+        /* 캐릭터 CSS 정의: 움직이는 아바타 */
+        .character {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            font-size: 40px; 
+            text-align: center;
+            transition: left 0.5s, top 0.5s, transform 0.5s; 
+            transform: scale({{ initial_scale }});
+            left: 50%;
+            top: 50%;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .character::before {
+            content: '🧍'; /* 아바타 이모지 */
+        }
+
+        /* 상품 아이콘 CSS */
+        .product-item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+            transition: transform 0.2s;
+            z-index: 900;
+        }
+        .product-item:hover {
+            transform: scale(1.2);
+        }
+
+        /* UI 패널 및 팝업 스타일은 생략 */
+        .ui-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: flex;
+            gap: 15px;
+        }
+
+        button { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background-color 0.2s; }
+        .action-button { background-color: #ff9900; color: white; }
+        .action-button:hover { background-color: #e68a00; }
+        #response-message { margin-left: 20px; font-weight: bold; color: #4CAF50; }
+        #cart-count { margin-left: 5px; color: #E91E63; }
+        
+        #cart-content-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            display: none;
+            max-width: 400px;
+            min-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="character" class="character"></div>
+
+    <div class="ui-panel">
+        <button onclick="eatMeal()" class="action-button">💪 힘 충전!</button>
+        <button onclick="viewCart()" class="action-button">🛒 장바구니 (<span id="cart-count">0</span>)</button>
+        <div id="response-message">공원에서 쇼핑을 시작해 보세요!</div>
+    </div>
+
+    <div id="cart-content-popup">
+        <h2>🛒 나의 장바구니</h2>
+        <ul id="cart-items-list"></ul>
+        <p><strong>총 금액: <span id="cart-total-price">0</span>원</strong></p>
+        <button onclick="document.getElementById('cart-content-popup').style.display='none'">닫기</button>
+    </div>
+
+
+    <script>
+        const character = document.getElementById('character');
+        const responseMessage = document.getElementById('response-message');
+        const cartCountElement = document.getElementById('cart-count');
+        
+        // Flask에서 전달받은 상품 목록
+        const PRODUCTS = {{ products | tojson }};
+
+        // 상품 아이템을 랜덤 위치에 배치
+        function placeProducts() {
+            Object.keys(PRODUCTS).forEach((id) => {
+                const item = PRODUCTS[id];
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('product-item');
+                itemElement.setAttribute('data-id', id);
+                itemElement.title = `${item.name} (${item.price.toLocaleString()}원) - 클릭하여 담기`;
+                itemElement.textContent = item.icon;
+                
+                // 화면의 10%~90% 사이의 랜덤 위치
+                const randX = Math.random() * (window.innerWidth * 0.8) + (window.innerWidth * 0.1);
+                const randY = Math.random() * (window.innerHeight * 0.6) + (window.innerHeight * 0.1);
+                
+                itemElement.style.left = randX + 'px';
+                itemElement.style.top = randY + 'px';
+                
+                // 클릭 이벤트 리스너 추가
+                itemElement.addEventListener('click', function() {
+                    const rect = itemElement.getBoundingClientRect();
+                    // 상품 위치로 캐릭터 이동
+                    character.style.left = rect.left + 'px';
+                    character.style.top = rect.top + 'px';
+                    
+                    // 장바구니에 담기 함수 호출
+                    addToCart(id, item.name);
+                });
+
+                document.body.appendChild(itemElement);
+            });
+        }
+
+        // 1. 캐릭터 움직이기 (클릭된 위치로 이동)
+        document.body.addEventListener('click', function(event) {
+            // UI 패널, 상품, 팝업 등이 아닌 배경을 클릭했을 때만 이동
+            if (!event.target.classList.contains('product-item') &&
+                !event.target.closest('.ui-panel') &&
+                !event.target.closest('#cart-content-popup')) {
+                
+                // 클릭된 위치의 중앙으로 캐릭터 이동 (캐릭터 크기 50px 기준)
+                character.style.left = event.clientX - 25 + 'px';
+                character.style.top = event.clientY - 25 + 'px';
+            }
+        });
+
+        // 2. 장바구니에 상품 추가
+        function addToCart(productId, productName) {
+            fetch('/add_to_cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                responseMessage.textContent = data.message;
+                responseMessage.style.color = data.status === 'success' ? '#4CAF50' : 'red';
+                cartCountElement.textContent = data.cart_count || 0;
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                responseMessage.textContent = '상품 담기 통신 오류 발생';
+                responseMessage.style.color = 'red';
+            });
+        }
+
+        // 3. 장바구니 내용 확인
+        function viewCart() {
+            fetch('/view_cart', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('cart-items-list');
+                list.innerHTML = '';
+                
+                if (data.item_count > 0) {
+                    data.items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `${item.name} - ${item.price.toLocaleString()}원`;
+                        list.appendChild(li);
+                    });
+                    document.getElementById('cart-total-price').textContent = data.total_price.toLocaleString();
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = '장바구니가 비어 있습니다.';
+                    list.appendChild(li);
+                    document.getElementById('cart-total-price').textContent = '0';
+                }
+
+                document.getElementById('cart-content-popup').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error viewing cart:', error);
+                responseMessage.textContent = '장바구니 확인 통신 오류 발생';
+                responseMessage.style.color = 'red';
+            });
+        }
+        
+        // 4. 캐릭터 성장 기능
+        function eatMeal() {
+            fetch('/eat_meal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(response => response.json())
+            .then(data => {
+                character.style.transform = `scale(${data.new_scale})`;
+                responseMessage.textContent = data.message;
+                responseMessage.style.color = 'orange';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // 페이지 로드 후 상품 배치 시작
+        window.onload = placeProducts;
+    </script>
+</body>
+</html>
