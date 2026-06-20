@@ -1,0 +1,21 @@
+{
+  "race_url": true,
+  "entry_url": true,
+  "horse_url": true,
+  "body_url": true,
+  "gear_url": true,
+  "rating_url": true,
+  "odds_url": true,
+  "today_odds_url": true,
+  "result_detail_url": true,
+  "race_record_url": true,
+  "start_exam_url": true,
+  "judge_url": true,
+  "jockey_change_url": true,
+  "weather_alert_url": true,
+  "corner_pace_url": true,
+  "popularity_url": true,
+  "first_odds_url": true,
+  "second_odds_url": true,
+  "third_odds_url": true
+}
