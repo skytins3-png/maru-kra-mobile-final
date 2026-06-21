@@ -1,0 +1,29 @@
+name: MARU KRA scheduler
+
+on:
+  schedule:
+    # GitHub Actions는 UTC 기준입니다. 한국시간 09:00~18:55 사이를 대략 10분마다 확인합니다.
+    - cron: "*/10 0-9 * * *"
+  workflow_dispatch:
+
+jobs:
+  run-scheduler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run KRA scheduler
+        env:
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: python scheduler_runner.py
+      - name: Commit hub cache
+        run: |
+          git config user.name "maru-kra-bot"
+          git config user.email "maru-kra-bot@example.com"
+          git add data || true
+          git commit -m "auto: update kra hub" || echo "no changes"
+          git push || true
