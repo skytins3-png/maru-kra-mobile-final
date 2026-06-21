@@ -1,0 +1,210 @@
+[
+  {
+    "no": 1,
+    "name": "경주정보",
+    "kind": "race_schedule",
+    "url": "https://apis.data.go.kr/B551015/API186_1/SeoulRace_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 2,
+    "name": "출전등록말/출전표",
+    "kind": "entry",
+    "url": "https://apis.data.go.kr/B551015/API23_1/entryRaceHorse_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 3,
+    "name": "경주마정보",
+    "kind": "horse",
+    "url": "https://apis.data.go.kr/B551015/API310/raceHorseInfo",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 4,
+    "name": "출전마 체중",
+    "kind": "body_weight",
+    "url": "https://apis.data.go.kr/B551015/API25_1/raceHorseBody",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 5,
+    "name": "장구/폐출혈",
+    "kind": "gear_bleeding",
+    "url": "https://apis.data.go.kr/B551015/API24_1/raceHorseGear",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 6,
+    "name": "레이팅",
+    "kind": "rating",
+    "url": "https://apis.data.go.kr/B551015/API177/raceHorseRating",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 7,
+    "name": "배당/매출",
+    "kind": "dividend_sales",
+    "url": "https://apis.data.go.kr/B551015/API28_1/Dividend_rate",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 8,
+    "name": "시행당일 배당종합",
+    "kind": "odds_total",
+    "url": "https://apis.data.go.kr/B551015/API301/Dividend_rate_total",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 9,
+    "name": "경주결과상세",
+    "kind": "result_detail",
+    "url": "https://apis.data.go.kr/B551015/API299_1/raceResultDetail_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 10,
+    "name": "경주기록",
+    "kind": "race_record",
+    "url": "https://apis.data.go.kr/B551015/API214_1/raceRecord_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 11,
+    "name": "출발심사",
+    "kind": "start_exam",
+    "url": "https://apis.data.go.kr/B551015/API76_1/startExamResult_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 12,
+    "name": "경주심판",
+    "kind": "race_judge",
+    "url": "https://apis.data.go.kr/B551015/API72_1/raceJudge_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 13,
+    "name": "기수변경",
+    "kind": "jockey_change",
+    "url": "https://apis.data.go.kr/B551015/API71_1/jockeyChange_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 14,
+    "name": "기상특보",
+    "kind": "weather_alert",
+    "url": "https://apis.data.go.kr/1360000/WthrWrnInfoService/getPwnStatus",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 15,
+    "name": "코너/주로빠르기",
+    "kind": "corner_track",
+    "url": "https://apis.data.go.kr/B551015/API303/corner_rank",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 16,
+    "name": "인기투표",
+    "kind": "popularity",
+    "url": "https://apis.data.go.kr/B551015/API302/popularity",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 17,
+    "name": "1착마 적중승식",
+    "kind": "win_prediction",
+    "url": "https://apis.data.go.kr/B551015/API27_1/winPredictionRateInfo_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 18,
+    "name": "2착마 적중승식",
+    "kind": "double_prediction",
+    "url": "https://apis.data.go.kr/B551015/API29_1/doublePredictionRateInfo_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 19,
+    "name": "3착마 적중승식",
+    "kind": "triple_prediction",
+    "url": "https://apis.data.go.kr/B551015/API30_1/triplePredictionRateInfo_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 20,
+    "name": "경주개요 API3_1",
+    "kind": "race_info",
+    "url": "https://apis.data.go.kr/B551015/API3_1/raceInfo_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 21,
+    "name": "출전취소 API9_1",
+    "kind": "horse_cancel",
+    "url": "https://apis.data.go.kr/B551015/API9_1/raceHorseCancelInfo_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 22,
+    "name": "출전등록말 API23_1",
+    "kind": "entry_duplicate",
+    "url": "https://apis.data.go.kr/B551015/API23_1/entryRaceHorse_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 23,
+    "name": "확정배당통합 API160_1",
+    "kind": "integrated_odds",
+    "url": "https://apis.data.go.kr/B551015/API160_1/integratedInfo_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 24,
+    "name": "기수성적 API11_1",
+    "kind": "jockey_result",
+    "url": "https://apis.data.go.kr/B551015/API11_1/jockeyResult_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 25,
+    "name": "경주성적상세 API214_1",
+    "kind": "race_detail_result",
+    "url": "https://apis.data.go.kr/B551015/API214_1/RaceDetailResult_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  },
+  {
+    "no": 26,
+    "name": "경주마장제 API191_1",
+    "kind": "horse_shoe",
+    "url": "https://apis.data.go.kr/B551015/API191_1/HorseShoe_1",
+    "enabled": true,
+    "source": "user_screenshot_2026-06-21"
+  }
+]
