@@ -1,0 +1,44 @@
+{
+  "mobile": "가볍게 보기/복사/공식페이지 이동",
+  "hub": "수집/분석/저장/mobile_recommend.json 생성",
+  "pc": "전체 확인/관리/오류점검/빅데이터 검토",
+  "kra_sources": [
+    "경마캘린더",
+    "경주시간표",
+    "경주개요",
+    "경주안내",
+    "출전표 PDF",
+    "출전마 정보",
+    "기수 정보",
+    "조교사 정보",
+    "경주마 상세정보",
+    "경주기록",
+    "금일출전마체중",
+    "출전취소",
+    "경주속보",
+    "예상배당률 통합",
+    "경주로/주로상태",
+    "날씨/기상특보",
+    "경주결과",
+    "확정배당",
+    "성적표 PDF"
+  ],
+  "mobile_hidden": [
+    "전체 API 상태표",
+    "긴 데이터프레임",
+    "빅데이터 전체 로그",
+    "19개 API ON/OFF",
+    "PDF 원문",
+    "PC 상세 분석표"
+  ],
+  "api_total": "기존 19개 + 추가 7개 = 26개",
+  "added_7_api_urls": {
+    "경주개요 API3_1": "https://apis.data.go.kr/B551015/API3_1/raceInfo_1",
+    "경주마 출전취소 API9_1": "https://apis.data.go.kr/B551015/API9_1/raceHorseCancelInfo_1",
+    "출전 등록말 API23_1": "https://apis.data.go.kr/B551015/API23_1/entryRaceHorse_1",
+    "확정배당율 통합 API160_1": "https://apis.data.go.kr/B551015/API160_1/integratedInfo_1",
+    "기수 성적 API11_1": "https://apis.data.go.kr/B551015/API11_1/jockeyResult_1",
+    "경주성적정보 API214_1": "https://apis.data.go.kr/B551015/API214_1/RaceDetailResult_1",
+    "경주마장제정보 API191_1": "https://apis.data.go.kr/B551015/API191_1/HorseShoe_1"
+  }
+}
